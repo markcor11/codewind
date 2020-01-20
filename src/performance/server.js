@@ -25,12 +25,14 @@ const path = require('path');
 
 const monitor = require('./monitor/route');
 
-var loadProcess;
+let loadProcess;
 let projectURL;
 
 const codewindVersion = process.env.CODEWIND_VERSION;
-const imageBuildTime = process.env.IMAGE_BUILD_TIME
+const imageBuildTime = process.env.IMAGE_BUILD_TIME;
 
+// Allow connection to any project that might be using a self signed certificate
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 app.use(bodyParser.json());
 app.get('/', (req, res) => res.send('Performance Container is running...'));

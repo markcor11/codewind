@@ -29,6 +29,9 @@ async function main() {
   // Set the umask for file creation.
   process.umask(0o002);
 
+  // Allow connection to any project and any endpoints setup to use a self signed certificate
+  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
   // dotenv reads .env and adds it to the process.env object
   require('dotenv').config()
 

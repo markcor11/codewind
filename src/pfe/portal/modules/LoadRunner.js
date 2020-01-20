@@ -16,7 +16,6 @@ const io = require('socket.io-client');
 const { promisify } = require('util');
 const mkDirAsync = promisify(fs.mkdir);
 const path = require('path');
-const http = require('http');
 const Logger = require('./utils/Logger');
 const log = new Logger('LoadRunner.js');
 const docker = require('./utils/dockerFunctions');
@@ -45,7 +44,7 @@ module.exports = class LoadRunner {
   }
 
   /**
-   * Call metrics API to create a collection
+   * Call metrics API in the project to create a collection
    *
    * @returns collection URI (eg 'collections/0')
    */
@@ -69,7 +68,7 @@ module.exports = class LoadRunner {
 
       log.info(`createCollection: ${this.project.projectID}, ${options.host}, ${options.port}, ${metricsContextRoot}`);
 
-      let metricsRes = await cwUtils.asyncHttpRequest(options);
+      let metricsRes = await cwUtils.asyncHttpRequest(options,undefined,this.project.isHttps);
       log.debug('createCollection: metricsRes.statusCode=' + metricsRes.statusCode);
       switch (metricsRes.statusCode) {
       case 201:
@@ -90,7 +89,8 @@ module.exports = class LoadRunner {
   }
 
   /**
-   * Call metrics API to retrieve metrics and then delete the collection
+   * Call metrics API to retrieve metrics collection from the project,
+   * and then delete the collection
    *
    * @param host
    * @param port
@@ -103,6 +103,7 @@ module.exports = class LoadRunner {
    * @returns
    */
   async recordCollection() {
+    const projectIsHttps = this.project.isHttps;
     let options = {
       host: this.project.host,
       port: this.project.getPort(),
@@ -118,17 +119,22 @@ module.exports = class LoadRunner {
 
     try {
       // Get the metrics collection
-      let metricsRes = await cwUtils.asyncHttpRequest(options);
+      let metricsRes = await cwUtils.asyncHttpRequest(options,undefined,projectIsHttps);
+      log.info("recordCollection using: " + JSON.stringify(options));
       let metricsJson = "";
       switch (metricsRes.statusCode) {
       case 200:
+        log.info(`recordCollection: parsing results`);
         metricsJson = JSON.parse(metricsRes.body);
         if (this.runDescription != null) {
           metricsJson.desc = this.runDescription;
         }
+        log.info(`recordCollection: saving collection to ${this.workingDir}/metrics.json`);
         try {
           await fs.writeJson(this.workingDir + '/metrics.json', metricsJson, { spaces: '  ' });
+          log.info(`recordCollection: saving collection to ${this.workingDir}/metrics.json - DONE`);
         } catch (err) {
+          log.info(`recordCollection: saving collection to ${this.workingDir}/metrics.json - FAILED`);
           log.error(err);
         }
         break;
@@ -139,21 +145,22 @@ module.exports = class LoadRunner {
       log.error('recordCollection: Error occurred');
       log.error(err);
     }
-
-    // Attempt to delete the collection
     options.method = 'DELETE';
-    http.request(options, function (res) {
-      if (res.statusCode == 204) {
+    log.info("recordCollection: Attempting to delete the collection from the project");
+    log.trace(`recordCollection: options = ${JSON.stringify(options)}`);
+
+    try {
+      let deleteRes = await cwUtils.asyncHttpRequest(options, undefined, projectIsHttps);
+      if (deleteRes.statusCode == 204) {
         log.info('recordCollection: Metrics collection deleted');
       } else {
-        log.error('recordCollection: Unable to delete metrics collection: ' + res.statusCode);
+        log.error('recordCollection: Unable to delete metrics collection: ' + deleteRes.statusCode);
       }
-    }).on('error', function (err) {
+    } catch (err) {
       log.error('recordCollection: Unable to delete metrics collection');
       log.error(err);
-    }).end();
+    }
   }
-
 
   /**
    * Function to run a load test
