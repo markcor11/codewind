@@ -15,6 +15,7 @@
  */
 let getLanguageCounters = function (appMetricsName) {
     switch (appMetricsName) {
+        case "javascript":
         case "nodejs": {
             return {
                 HTTP_AVERAGE_RESPONSE: 'averageResponseTime',
@@ -49,6 +50,25 @@ let getLanguageCounters = function (appMetricsName) {
         }
     }
 }
+
+// returns a formatted string with units based on the supplied value
+let getFormattedResponseTime = function(value) {
+  if (value < 999) {
+    return { value: value, units: 'ms' };
+  }
+  if (value < 60 * 1000) {
+    return { value: value / 1000, units: 's' };
+  }
+  return { value: value / 1000 / 60, units: 'min' };
+}
+
+// returns a formatted string with units based on the supplied value
+let getFormattedMemory = function(value) {
+    if (value < 1024 * 1024) {
+      return { value: value / 1024, units: 'KB' };
+    }
+    return { value: value / 1024 / 1024 , units: 'MB' };
+  }
 
 let updateAllMetricDeltas = function (model, metricTypes, filteredUrl) {
     /*
@@ -339,6 +359,8 @@ exports.updateAllMetricDeltas = updateAllMetricDeltas;
 exports.buildChartDataHTTP = buildChartDataHTTP;
 exports.buildChartData = buildChartData;
 exports.sortMetrics = sortMetrics;
+exports.getFormattedResponseTime = getFormattedResponseTime;
+exports.getFormattedMemory = getFormattedMemory;
 exports.getCounterNames = getCounterNames;
 exports.getURLAverageResponseTime = getURLAverageResponseTime;
 exports.getEndpoint = getEndpoint;

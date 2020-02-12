@@ -48,8 +48,8 @@ export default class ResultsCard extends Component {
         }
 
         try {
-            memoryValue = (snapshot.memory.value.value.data[counterKeys.MEM_PROCESS_PEAK] / 1024 / 1024).toFixed(1);
-            memoryValuePrevious = (snapshotPrevious.memory.value.value.data[counterKeys.MEM_PROCESS_PEAK] / 1024 / 1024).toFixed(1);
+            memoryValue = (snapshot.memory.value.value.data[counterKeys.MEM_PROCESS_PEAK]);
+            memoryValuePrevious = (snapshotPrevious.memory.value.value.data[counterKeys.MEM_PROCESS_PEAK] );
             memoryDelta = memoryValue - memoryValuePrevious;
         } catch (err) {
             console.log('Result card - No available memory data');
@@ -60,13 +60,13 @@ export default class ResultsCard extends Component {
                 return MetricsUtils.getPathFromURL(url_item.url) === this.props.absolutePath
             });
             if (responseValue) {
-                responseValue = responseValue[counterKeys.HTTP_AVERAGE_RESPONSE].toFixed(1);
+                responseValue = responseValue[counterKeys.HTTP_AVERAGE_RESPONSE];
             }
             responseValuePrevious = snapshotPrevious.http.value.value.data.find(url_item => {
                 return MetricsUtils.getPathFromURL(url_item.url) === this.props.absolutePath
             });
             if (responseValuePrevious) {
-                responseValuePrevious = responseValuePrevious[counterKeys.HTTP_AVERAGE_RESPONSE].toFixed(1);
+                responseValuePrevious = responseValuePrevious[counterKeys.HTTP_AVERAGE_RESPONSE];
             }
             responseDelta = responseValue - responseValuePrevious;
         } catch (err) {
@@ -93,6 +93,12 @@ export default class ResultsCard extends Component {
             }
         }
 
+        // Format values for display
+        const tempResponseTime = MetricsUtils.getFormattedResponseTime(responseValue);
+        const formattedResponseTime = tempResponseTime.value.toFixed(0) + "" + tempResponseTime.units;
+        const tempMemoryValue = MetricsUtils.getFormattedMemory(memoryValue);
+        const formattedMemory = tempMemoryValue.value.toFixed(1) + "" + tempMemoryValue.units;
+
         return (
             <div className='ResultsCard'>
                 <div className='metrics-container'>
@@ -109,7 +115,7 @@ export default class ResultsCard extends Component {
                         <div>
                             {responseValue ?
                                 <Fragment>
-                                    <div className='metrics-value'>{responseValue}ms</div>
+                                    <div className='metrics-value'>{formattedResponseTime}</div>
                                     <div className='metrics-type'>
                                         <div className='metrics-label'>Response</div>
                                         <div className='metrics-delta'>
@@ -138,7 +144,7 @@ export default class ResultsCard extends Component {
                             </div>
                         </div>
                         <div>
-                            <div className='metrics-value'>{memoryValue}MB</div>
+                            <div className='metrics-value'>{formattedMemory}</div>
                             <div className='metrics-type'>
                                 <div className='metrics-label'>Memory</div>
                                 <div className='metrics-delta'>
