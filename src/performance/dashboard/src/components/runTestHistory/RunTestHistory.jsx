@@ -145,10 +145,16 @@ class RunTestHistory extends Component {
                 return `${parseFloat(cpu.value.value.data[appCounterNames.CPU_PROCESS_MEAN] * 100).toFixed(1)} %`;
             }
             case 'stat_memory':
-                const memory = snapshot.memory;
-                return `${parseFloat(memory.value.value.data[appCounterNames.MEM_PROCESS_PEAK] / 1024 / 1024).toFixed(1)} MB`;
+                const tempMemory = MetricsUtils.getFormattedMemory(snapshot.memory.value.value.data[appCounterNames.MEM_PROCESS_PEAK]);
+                const formattedMemory = tempMemory.value.toFixed(1) + " " + tempMemory.units;
+                return `${formattedMemory}`
             case 'stat_response':
-                return (urlMetrics && urlMetrics[appCounterNames.HTTP_AVERAGE_RESPONSE]) ? `${urlMetrics[appCounterNames.HTTP_AVERAGE_RESPONSE].toFixed(1).toLocaleString()} ms` : '';
+                if (urlMetrics && urlMetrics[appCounterNames.HTTP_AVERAGE_RESPONSE]) {
+                    const tempResponseTime = MetricsUtils.getFormattedResponseTime(urlMetrics[appCounterNames.HTTP_AVERAGE_RESPONSE]);
+                    const formattedResponseTime = tempResponseTime.value.toFixed(1) + " " + tempResponseTime.units;
+                    return `${formattedResponseTime}`
+                }
+                return '';
             case 'stat_hits':
                 return (urlMetrics && urlMetrics[appCounterNames.HTTP_HITS]) ? `${urlMetrics[appCounterNames.HTTP_HITS].toLocaleString()}` : '';
             default:
