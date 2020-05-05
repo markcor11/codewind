@@ -28,6 +28,7 @@ class CapabilitiesPanel extends React.Component {
         this.state = {
             lastUpdated: 0,
             detailMessage:"",
+            detailSubComponent:"",
             revealDetail:false,
         };
         this.buildDisplayModel = this.buildDisplayModel.bind(this);
@@ -98,7 +99,7 @@ class CapabilitiesPanel extends React.Component {
         if (capabilityData.microprofilePackageFoundInBuildFile) {
             feature.status = Constants.STATUS_WARNING
             feature.statusMessage = Constants.MESSAGE_LIVEMETRICS_MICROPROFILE;
-            feature.detailMessage = Constants.MESSAGE_LIVEMETRICS_MICROPROFILE_DETAIL;
+            feature.detailSubComponent = Constants.MESSAGE_COMPONENT_LIVEMETRICS_MICROPROFILE;
             return
         }
 
@@ -146,19 +147,19 @@ class CapabilitiesPanel extends React.Component {
         const displayModelTemplate = [
             {
                 id: "ProjectStatus", label: "Project Status", status: Constants.STATUS_WARNING,
-                statusMessage: "Unable to determine status", detailMessage:""
+                statusMessage: "Unable to determine status", detailMessage:"", detailSubComponent:"",
             },
             {
                 id: "LoadRunner", label: "Run Load Feature", status: Constants.STATUS_WARNING,
-                statusMessage: "Unable to determine status", detailMessage:""
+                statusMessage: "Unable to determine status", detailMessage:"", detailSubComponent:"",
             },
             {
                 id: "LiveMetrics", label: "Live Monitoring", status: Constants.STATUS_WARNING,
-                statusMessage: "Unable to determine status", detailMessage:""
+                statusMessage: "Unable to determine status", detailMessage:"", detailSubComponent:"",
             },
             {
                 id: "Comparisons", label: "Benchmarks", status: Constants.STATUS_WARNING,
-                statusMessage: "Unable to determine status", detailMessage:""
+                statusMessage: "Unable to determine status", detailMessage:"", detailSubComponent:"",
             },
         ];
 
@@ -180,11 +181,11 @@ class CapabilitiesPanel extends React.Component {
         return displayModelTemplate;
     }
 
-    ShowDetailPanel(detailMessage) {
-        if (detailMessage != this.state.detailMessage) {
-            this.setState({revealDetail: true, detailMessage:detailMessage});
+    ShowDetailPanel(detailMessage, detailSubComponent) {
+        if (detailMessage != this.state.detailMessage || detailSubComponent != this.state.detailSubComponent) {
+            this.setState({revealDetail: true, detailMessage:detailMessage, detailSubComponent:detailSubComponent});
         } else {
-            this.setState({revealDetail: false, detailMessage:""});
+            this.setState({revealDetail: false, detailMessage:"", detailSubComponent:""});
         }
     }
 
@@ -214,15 +215,15 @@ class CapabilitiesPanel extends React.Component {
                                         </div>
                                         <div className="description">{row.statusMessage}</div>
                                         {
-                                          row.detailMessage == "" ? <Fragment/> :
-                                            <Button className="description" iconDescription="more" size="small" kind="ghost" onClick={() => this.ShowDetailPanel(row.detailMessage)}>more...</Button>
+                                          row.detailMessage == "" && row.detailSubComponent == "" ? <Fragment/> :
+                                            <Button className="description" iconDescription="more" size="small" kind="ghost" onClick={() => this.ShowDetailPanel(row.detailMessage, row.detailSubComponent)}>more...</Button>
                                         }
                                     </div>
                                 )
                             })
                         }
                     </div>
-                    <DetailPanel show={this.state.revealDetail} messageText={this.state.detailMessage} />
+                    <DetailPanel show={this.state.revealDetail} projectID={this.props.projectID} messageText={this.state.detailMessage} detailSubComponent={this.state.detailSubComponent}/>
                     <div className="actions">
                         <Button iconDescription="Continue" onClick={() => this.handleContinueClick()}>Continue</Button>
                     </div>
