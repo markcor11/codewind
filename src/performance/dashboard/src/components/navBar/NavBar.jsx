@@ -52,12 +52,14 @@ class NavBar extends React.Component {
     render() {
         return (
             <div className='NavBar' role="banner">
-                <span className='logo'> <img src={logo} alt="logo" aria-label="Logo" title="Logo"/> </span>
-                <span className='appTitle_1'>code</span>
-                <span className='appTitle_2'>wind</span>
-                <span className='projectName'>{this.state.projectName}</span>
+                <div className="title">
+                    <span className='logo'> <img src={logo} alt="logo" aria-label="Logo" title="Logo"/> </span>
+                    <span className='appTitle_1'>code</span>
+                    <span className='appTitle_2'>wind</span>
+                    <span className='projectName'>{this.state.projectName}</span>
+                </div>
                 <div className="utilities">
-                    <Button size="small" kind="ghost" renderIcon={this.props.navbarActions.displayCapabilitiesPanel ? IconNotificationFill : IconNotification} onClick={() => this.toggleCapabilityPanel()}/>
+                    <Button size="small" kind="ghost" style={{float:"right"}}renderIcon={this.props.navbarActions.displayCapabilitiesPanel ? IconNotificationFill : IconNotification} onClick={() => this.toggleCapabilityPanel()}/>
                 </div>
             </div>
         )
