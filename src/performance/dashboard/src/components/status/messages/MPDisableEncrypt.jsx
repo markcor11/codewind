@@ -9,7 +9,7 @@
 *     IBM Corporation - initial API and implementation
 ******************************************************************************/
 
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import ActionDisableMicroProfileAuth from './actions/ActionDisableMicroProfileAuth'
 import PropTypes from 'prop-types';
 
@@ -21,19 +21,21 @@ export default class MPDisableEncrypt extends Component {
     return (
       <div className="MPDisableEncrypt">
         If you wish to see live metrics, you can disable authentication by modifying the server.xml file in your project.
-        <br/>
-        You can locate this file at src/main/liberty/config/server.xml. Modify server.xml and add or update: <br/><br/>&lt;mpMetrics authentication=&quot;false&quot;/&gt;
-        <br/><br/>
+        <br />
+        You can locate this file at src/main/liberty/config/server.xml. Modify server.xml and add or update: <br /><br />&lt;mpMetrics authentication=&quot;false&quot;/&gt;
+        <br /><br />
         for example:
-        <br/><br/>
+        <br /><br />
         <div className="CodeBlock">
           &lt;featureManager&gt;
-          <br/>&nbsp;&nbsp;&lt;feature&gt;microProfile-2.0&lt;/feature&gt;
-          <br/>&lt;/featureManager&gt;
-          <br/>&lt;mpMetrics authentication=&quot;false&quot;/&gt;
+          <br />&nbsp;&nbsp;&lt;feature&gt;microProfile-2.0&lt;/feature&gt;
+          <br />&lt;/featureManager&gt;
+          <br />&lt;mpMetrics authentication=&quot;false&quot;/&gt;
         </div>
-        <br/>
-        <ActionDisableMicroProfileAuth projectID={this.props.projectID}/>
+        <br />
+        {
+          // Not for 0.12 <ActionDisableMicroProfileAuth projectID={this.props.projectID} />
+        }
       </div>
     )
   }

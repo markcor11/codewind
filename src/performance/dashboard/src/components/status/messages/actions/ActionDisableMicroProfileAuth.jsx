@@ -86,10 +86,12 @@ class ActionDisableMicroProfileAuth extends Component {
             ) : (
               <Fragment>
               <Button
+              kind="tertiary"
               disabled={disabled}
               renderIcon={IconEdit}
               aria-label="Disable Authentication"
               tabIndex={0}
+              size="small"
               onClick={() => this.handleOnClick()}>Disable authentication</Button>
               </Fragment>
             )}

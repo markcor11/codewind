@@ -28,6 +28,26 @@
   text-overflow: ellipsis;
 }
 
+.NavBar .utilities {
+  position: absolute;
+  top:0px;
+  right:$carbon--spacing-04;
+}
+
+.NavBar .utilities .bx--btn--ghost:hover .bx--btn__icon,
+.NavBar .utilities .bx--btn--ghost:active .bx--btn__icon {
+  fill: white;
+}
+
+.NavBar .utilities .bx--btn__icon {
+  fill: white;
+  height: 1.1rem;
+  width: 1.1rem;
+  margin:0;
+}
+
+
+
 .NavBar .projectName {
   margin-left: $carbon--spacing-04;
   color: $color-navbar-foreground;

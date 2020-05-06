@@ -9,7 +9,7 @@
 *     IBM Corporation - initial API and implementation
 ******************************************************************************/
 
-import React, {PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import PropTypes from 'prop-types';
 
@@ -18,7 +18,7 @@ export default class InlineHTML extends PureComponent {
   render() {
     return (
       <ErrorBoundary>
-        <div className="InlineHTML" dangerouslySetInnerHTML={{__html: this.props.markup }} />
+        <div className="InlineHTML" dangerouslySetInnerHTML={{ __html: this.props.markup }} />
       </ErrorBoundary>
     )
   }

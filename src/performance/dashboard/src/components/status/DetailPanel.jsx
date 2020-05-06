@@ -37,7 +37,6 @@ class DetailPanel extends Component {
     return (
       <div className={this.props.show ? "DetailsPanel reveal" : "DetailsPanel"}>
         <div className="detailPanelBox">
-          <div className="detailTitle">Additional information</div>
           <div className="detailBody">
             <ErrorBoundary>
               {detailSubComponent}

@@ -7,16 +7,21 @@
 *
 * Contributors:
 *     IBM Corporation - initial API and implementation
-******************************************************************************/
+*******************************************************************************/
 
-.CodeBlock {
-  font-family: 'Courier New', Courier, monospace;
-  font-size:0.9em;
-  font-weight:bold;
-}
+import { CAPABILITIES_PANEL } from '../actions/types';
 
-.ActionButton .errorMessage {
-  padding: 5px;
-  margin-left:20px;
-  color: #f1c21d;
+export default function reducer(
+  state = {
+    displayCapabilitiesPanel: true,
+  },
+  action
+) {
+  switch (action.type) {
+    case CAPABILITIES_PANEL: {
+      return { ...state, displayCapabilitiesPanel: action.revealPanel };
+    }
+    default: { }
+  }
+  return state;
 }
