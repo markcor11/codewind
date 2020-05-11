@@ -28,7 +28,7 @@ let socketURL = `${AppConstants.API_HOST}/default`;
 let socketPath = `${AppConstants.API_ROOT}/socket.io/`;
 
 const socket = io(socketURL, {
-  timeout: '5000',
+  timeout: '10000',
   path: socketPath,
 });
 
@@ -39,6 +39,15 @@ socket.on('connect', function(){
     socket.emit('authentication', {  token:  accessToken});
   }
 });
+
+socket.on('connect_failed', function(){
+  console.error('Performance Dashboard SocketIO connection failed');
+});
+
+socket.on('disconnect', function () {
+  console.info('Performance Dashboard SocketIO has disconnected');
+});
+
 
 function App() {
 
