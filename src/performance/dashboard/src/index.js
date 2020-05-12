@@ -19,6 +19,7 @@ import * as AppConstants from './AppConstants';
 
 // fetch the authentication details from gatekeeper
 async function fetchAuthInfo() {
+    console.info("Dashboard: Fetching Auth Info");
     try {
         const result = await fetch(`${AppConstants.API_SERVER}/api/v1/gatekeeper/environment`, {
             method: 'get',
@@ -46,7 +47,7 @@ async function fetchAuthInfo() {
 async function init() {
     let initOptions = await fetchAuthInfo();
     if (initOptions.hasError) {
-        console.warn("No Auth service available")
+        console.warn("Dashboard: No Auth service available - unable to authenticate")
         ReactDOM.render(
             <Provider store={configureStore}>
                 <App />
@@ -59,7 +60,7 @@ async function init() {
             if (!auth) {
                 window.location.reload();
             } else {
-                console.info(`Dashboard - authenticated`);
+                console.info(`Dashboard: obtained an authentication token`);
             }
             ReactDOM.render(
                 <Provider store={configureStore}>
@@ -75,17 +76,17 @@ async function init() {
                 // if the access token is due to expire within the next 80 seconds refresh it
                 keycloak.updateToken(80).success((refreshed) => {
                     if (refreshed) {
-                        console.debug(`Dashboard access-token refreshed`);
+                        console.info(`Dashboard: access-token refreshed`);
                     } else {
-                        console.warn(`Dashboard refresh-token refreshed`);
+                        console.info(`Dashboard: refresh-token refreshed`);
                     }
                 }).error(() => {
-                    console.error(`Dashboard Failed to refresh authentication tokens`);
+                    console.error(`Dashboard: Failed to refresh authentication tokens. Will retry in 60 seconds`);
                 });
             }, 60 * 1000)
 
         }).error(err => {
-            console.error("Authenticated Failed");
+            console.error("Dashboard: Authenticated Failed");
             console.error(err);
         });
     }

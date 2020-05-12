@@ -32,20 +32,46 @@ const socket = io(socketURL, {
   path: socketPath,
 });
 
+socket.on('connecting', function(){
+  console.info('Dashboard: SocketIO connecting');
+});
+
+socket.on('reconnecting', function(){
+  console.info('Dashboard: SocketIO reconnecting');
+});
+
 // Authenticate socket after connecting
 socket.on('connect', function(){
+  console.info('Dashboard: SocketIO connect');
   const accessToken = localStorage.getItem("cw-access-token");
   if (accessToken) {
-    socket.emit('authentication', {  token:  accessToken});
+    console.info('Dashboard: SocketIO authenticating');
+    try {
+      socket.emit('authentication', {  token:  accessToken });
+    } catch (err) {
+      console.error(`Dashboard: SocketIO authentication error - ${err}`);
+    }
   }
 });
 
+socket.on('authenticated', function(message){
+  console.info(`Dashboard: SocketIO authenticated: ${message}`);
+});
+
 socket.on('connect_failed', function(){
-  console.error('Performance Dashboard SocketIO connection failed');
+  console.error('Dashboard: SocketIO connection failed');
+});
+
+socket.on('reconnect_failed', function(){
+  console.error('Dashboard: SocketIO reconnection failed');
+});
+
+socket.on('close', function(){
+  console.info('Dashboard: SocketIO connection closed');
 });
 
 socket.on('disconnect', function () {
-  console.info('Performance Dashboard SocketIO has disconnected');
+  console.info('Dashboard: SocketIO has disconnected');
 });
 
 
