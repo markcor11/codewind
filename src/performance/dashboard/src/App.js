@@ -58,6 +58,11 @@ socket.on('authenticated', function(message){
   console.info(`Dashboard: SocketIO authenticated: ${message}`);
 });
 
+socket.on('unauthorized', function(err){
+  console.error("There was an error with the authentication:", err.message);
+  alert("Authentication failed - try refreshing this page");
+});
+
 socket.on('connect_failed', function(){
   console.error('Dashboard: SocketIO connection failed');
 });
